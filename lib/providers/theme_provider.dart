@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/colors_theme.dart';
-import 'style_theme.dart';
+import '../theme/style_theme.dart';
 
 final themeProvider = Provider<ThemeProvider>((_) => ThemeProvider());
 
