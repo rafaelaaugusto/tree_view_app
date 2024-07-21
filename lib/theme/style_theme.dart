@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tree_view_app/theme/colors_theme.dart';
+import 'colors_theme.dart';
 
 const appBarTheme = AppBarTheme(
   backgroundColor: secondary,
