@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'pages/asset_page.dart';
 import 'pages/home_page.dart';
 import 'providers/theme_provider.dart';
 
@@ -30,7 +29,6 @@ class _AppState extends ConsumerState<App> {
       initialRoute: '/home',
       routes: {
         '/home': (context) => const HomePage(),
-        '/asset': (context) => const AssetPage(),
       },
     );
   }

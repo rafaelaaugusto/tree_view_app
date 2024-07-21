@@ -20,8 +20,9 @@ class ApiService {
     }
   }
 
-  Future<List<LocationModel>> fetchLocations() async {
-    final response = await http.get(Uri.parse('$baseUrl/companies/locations'));
+  Future<List<LocationModel>> fetchLocations(String companyId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/companies/$companyId/locations'));
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
 
@@ -31,8 +32,9 @@ class ApiService {
     }
   }
 
-  Future<List<AssetModel>> fetchAssets() async {
-    final response = await http.get(Uri.parse('$baseUrl/companies/assets'));
+  Future<List<AssetModel>> fetchAssets(String companyId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/companies/$companyId/assets'));
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
 

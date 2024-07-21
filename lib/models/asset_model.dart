@@ -6,6 +6,7 @@ class AssetModel {
     this.locationId,
     this.sensorType,
     this.status,
+    this.gatewayId,
   });
 
   final String id;
@@ -14,6 +15,7 @@ class AssetModel {
   final String? locationId;
   final String? sensorType;
   final String? status;
+  final String? gatewayId;
 
   factory AssetModel.fromJson(Map<String, dynamic> data) {
     return AssetModel(
@@ -23,6 +25,7 @@ class AssetModel {
       locationId: data['locationId'],
       sensorType: data['sensorType'],
       status: data['status'],
+      gatewayId: data['gatewayId'],
     );
   }
 }
