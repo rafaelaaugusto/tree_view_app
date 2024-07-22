@@ -1,11 +1,13 @@
 import 'package:fleasy/fleasy.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-import '../components/tree_component.dart';
 import '../models/asset_model.dart';
 import '../models/location_model.dart';
 import '../services/api_service.dart';
+import '../theme/colors_theme.dart';
+import '../views/asset_view.dart';
 
 class AssetPage extends StatefulWidget {
   const AssetPage({
@@ -20,6 +22,7 @@ class AssetPage extends StatefulWidget {
 }
 
 class _AssetPageState extends State<AssetPage> {
+  ValueNotifier downloadProgressNotifier = ValueNotifier(0);
   final ApiService apiService = ApiService();
   List<LocationModel> locationsData = [];
   List<AssetModel> assetsData = [];
@@ -36,8 +39,9 @@ class _AssetPageState extends State<AssetPage> {
 
   Future<void> fetchDataAndBuildTreeNode() async {
     try {
-      locationsData = await apiService.fetchLocations(widget.companyId);
-      assetsData = await apiService.fetchAssets(widget.companyId);
+      locationsData =
+          await compute(apiService.fetchLocations, widget.companyId);
+      assetsData = await compute(apiService.fetchAssets, widget.companyId);
     } catch (e) {
       hasError = true;
     }
@@ -49,42 +53,42 @@ class _AssetPageState extends State<AssetPage> {
     List<LocationModel> locationsData,
     List<AssetModel> assetsData,
   ) {
+    downloadProgressNotifier.value = 0;
     Map<String, TreeNode> nodeMap = {};
-    final locations =
-        locationsData.where((location) => location.parentId == null);
-    final assets = assetsData
-        .where((asset) => asset.gatewayId == null && asset.sensorType == null);
+
+    final assets = assetsData.where(
+      (asset) => asset.gatewayId == null,
+    );
     final components = assetsData.where(
       (component) => component.gatewayId.isNotBlank,
     );
 
     for (var location in locationsData) {
-      nodeMap[location.id] = TreeNode(
+      nodeMap[location.id] = createTreeNode(
         id: location.id,
         name: location.name,
-        children: [],
-        leading: const Icon(Icons.local_airport),
+        iconData: EvaIcons.pin_outline,
       );
     }
 
     for (var asset in assets) {
-      nodeMap[asset.id] = TreeNode(
+      nodeMap[asset.id] = createTreeNode(
         id: asset.id,
         name: asset.name,
-        children: [],
-        leading: Icon(Icons.square),
+        iconData: EvaIcons.cube_outline,
       );
     }
 
     for (var component in components) {
-      nodeMap[component.id] = TreeNode(
+      nodeMap[component.id] = createTreeNode(
         id: component.id,
         name: component.name,
-        children: [],
-        leading: Icon(
-          Icons.square_foot,
-        ),
-        trailing: Icon(FontAwesome.bold_solid),
+        iconData: AntDesign.codepen_outline,
+        trailingIconData: component.status == Status.alert
+            ? FontAwesome.circle
+            : FontAwesome.bolt_solid,
+        trailingColor:
+            component.status == Status.alert ? Colors.red : Colors.green,
       );
     }
 
@@ -114,7 +118,7 @@ class _AssetPageState extends State<AssetPage> {
     }
 
     List<TreeNode> roots = nodeMap.values.where((node) {
-      return locations
+      return locationsData
               .any((loc) => loc.id == node.id && loc.parentId == null) ||
           assets.any((asset) =>
               asset.id == node.id &&
@@ -135,25 +139,39 @@ class _AssetPageState extends State<AssetPage> {
     );
   }
 
+  TreeNode createTreeNode({
+    required String id,
+    required String name,
+    required IconData iconData,
+    IconData? trailingIconData,
+    Color? trailingColor,
+  }) {
+    return TreeNode(
+      id: id,
+      name: name,
+      children: [],
+      leading: Icon(iconData, color: primary),
+      trailing: trailingIconData != null
+          ? Icon(
+              trailingIconData,
+              size: Insets.xl,
+              color: trailingColor,
+            )
+          : null,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isLoading = locationsData.isNotBlank && assetsData.isNotBlank;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Assets'),
       ),
-      body: !hasError
-          ? isLoading
-              ? Tree(
-                  root: root,
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                )
-          : const Center(
-              child: Text('Erro ao carregador ativos.'),
-            ),
+      body: hasError
+          ? const Center(child: Text('Erro ao carregar ativos.'))
+          : locationsData.isNotBlank && assetsData.isNotBlank
+              ? AssetView(root: root)
+              : const Center(child: CircularProgressIndicator()),
     );
   }
 }
