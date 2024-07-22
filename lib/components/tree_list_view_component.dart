@@ -1,7 +1,7 @@
 import 'package:fleasy/fleasy.dart';
 import 'package:flutter/material.dart';
 
-import '../pages/asset_page.dart';
+import '../utils/tree_builder.dart';
 import 'node_expansion_tile_component.dart';
 
 class TreeListView extends StatelessWidget {
@@ -12,7 +12,7 @@ class TreeListView extends StatelessWidget {
 
   final TreeNode root;
 
-  List<Widget> buildTree(TreeNode node) {
+  List<Widget> buildTreeNodes(TreeNode node) {
     List<Widget> children = [];
 
     for (var child in node.children) {
@@ -22,7 +22,7 @@ class TreeListView extends StatelessWidget {
           leading: child.leading,
           hasChildren: child.children.isNotBlank,
           trailing: child.trailing,
-          children: buildTree(child),
+          children: buildTreeNodes(child),
         ),
       );
     }
@@ -31,7 +31,7 @@ class TreeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nodes = buildTree(root);
+    final nodes = buildTreeNodes(root);
 
     return Expanded(
       child: ListView.builder(

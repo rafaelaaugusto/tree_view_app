@@ -2,13 +2,17 @@ import 'package:fleasy/fleasy.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
+import 'filter_card_component.dart';
+
 class SearchFilter extends StatelessWidget {
   const SearchFilter({
     super.key,
     required this.isSelected,
+    required this.applyFilter,
   });
 
   final List<bool> isSelected;
+  final Function(int) applyFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -28,66 +32,24 @@ class SearchFilter extends StatelessWidget {
             ),
           ),
           ToggleButtons(
+            fillColor: Colors.white,
+            splashColor: Colors.white,
+            onPressed: applyFilter,
             isSelected: isSelected,
             renderBorder: false,
             children: [
-              FilterOption(
+              FilterCard(
                 name: 'Sensor de energia',
                 leading: FontAwesome.bolt_solid,
                 isSelected: isSelected[0],
               ),
-              FilterOption(
-                name: 'Sensor de energia',
-                leading: FontAwesome.bolt_solid,
+              FilterCard(
+                name: 'Crítico',
+                leading: Icons.info_outline,
                 isSelected: isSelected[1],
               )
             ],
           )
-        ],
-      ),
-    );
-  }
-}
-
-class FilterOption extends StatelessWidget {
-  const FilterOption({
-    super.key,
-    required this.name,
-    this.isSelected = false,
-    this.leading,
-  });
-
-  final String name;
-  final bool isSelected;
-  final IconData? leading;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isSelected
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(Insets.s),
-      ),
-      padding: const EdgeInsets.all(Insets.m),
-      margin: const EdgeInsets.only(right: Insets.s),
-      child: Row(
-        children: [
-          Icon(
-            leading,
-            size: Insets.xxl,
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: Insets.xl,
-              color: isSelected
-                  ? Theme.of(context).colorScheme.onPrimary
-                  : Colors.black,
-            ),
-          ),
         ],
       ),
     );
