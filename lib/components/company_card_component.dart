@@ -16,13 +16,15 @@ class CompanyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        name,
+        '$name Unit',
         style: TextStyle(
           color: Theme.of(context).colorScheme.onPrimary,
         ),
       ),
-      leading: const Icon(FontAwesome.location_pin_solid),
-      onTap: onPressed,
+      leading: Icon(
+        AntDesign.gold_outline,
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
       tileColor: Theme.of(context).colorScheme.primary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Insets.m),
@@ -31,6 +33,7 @@ class CompanyCard extends StatelessWidget {
         vertical: Insets.xl,
         horizontal: Insets.xxl,
       ),
+      onTap: onPressed,
     );
   }
 }
