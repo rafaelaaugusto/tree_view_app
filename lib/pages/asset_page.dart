@@ -22,12 +22,11 @@ class AssetPage extends StatefulWidget {
 }
 
 class _AssetPageState extends State<AssetPage> {
-  ValueNotifier downloadProgressNotifier = ValueNotifier(0);
   final ApiService apiService = ApiService();
+  List<bool> filterSelected = List.filled(2, false);
   List<LocationModel> locationsData = [];
   List<AssetModel> assetsData = [];
-  TreeNode root =
-      TreeNode(id: 'id', name: 'name', children: [], leading: SizedBox());
+  late final TreeNode root;
   String searchTerm = '';
   bool hasError = false;
 
@@ -53,7 +52,6 @@ class _AssetPageState extends State<AssetPage> {
     List<LocationModel> locationsData,
     List<AssetModel> assetsData,
   ) {
-    downloadProgressNotifier.value = 0;
     Map<String, TreeNode> nodeMap = {};
 
     final assets = assetsData.where(
@@ -85,7 +83,7 @@ class _AssetPageState extends State<AssetPage> {
         name: component.name,
         iconData: AntDesign.codepen_outline,
         trailingIconData: component.status == Status.alert
-            ? FontAwesome.circle
+            ? Icons.circle_rounded
             : FontAwesome.bolt_solid,
         trailingColor:
             component.status == Status.alert ? Colors.red : Colors.green,
@@ -161,6 +159,12 @@ class _AssetPageState extends State<AssetPage> {
     );
   }
 
+  void applyFilter(int index) {
+    filterSelected = List.filled(2, false);
+    filterSelected[index] = true;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,7 +174,10 @@ class _AssetPageState extends State<AssetPage> {
       body: hasError
           ? const Center(child: Text('Erro ao carregar ativos.'))
           : locationsData.isNotBlank && assetsData.isNotBlank
-              ? AssetView(root: root)
+              ? AssetView(
+                  root: root,
+                  filterSelected: filterSelected,
+                )
               : const Center(child: CircularProgressIndicator()),
     );
   }

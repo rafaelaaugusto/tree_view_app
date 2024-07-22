@@ -8,15 +8,20 @@ class AssetView extends StatelessWidget {
   const AssetView({
     super.key,
     required this.root,
+    required this.filterSelected,
   });
 
   final TreeNode root;
+  final List<bool> filterSelected;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SearchFilter(),
+        SearchFilter(
+          isSelected: filterSelected,
+        ),
+        const Divider(),
         TreeListView(root: root),
       ],
     );
