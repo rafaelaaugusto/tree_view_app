@@ -10,5 +10,7 @@ class ThemeProvider {
   final ThemeData theme = ThemeData.light(useMaterial3: true).copyWith(
     colorScheme: colorScheme,
     appBarTheme: appBarTheme,
+    iconTheme: iconThemeData,
+    dividerTheme: const DividerThemeData(color: Color(0XFFEAEEF2)),
   );
 }

@@ -8,5 +8,8 @@ const appBarTheme = AppBarTheme(
   titleTextStyle: TextStyle(
     color: onPrimary,
   ),
+  iconTheme: iconThemeData,
   elevation: 0,
 );
+
+const iconThemeData = IconThemeData(color: onPrimary);
