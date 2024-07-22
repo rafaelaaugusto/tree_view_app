@@ -20,20 +20,23 @@ class NodeExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
+      dense: true,
       title: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          if (hasChildren) ...[
+          if (hasChildren)
             const Icon(
               Icons.keyboard_arrow_down_rounded,
             ),
-            const SizedBox(width: Insets.s),
-          ],
           leading,
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: Insets.s),
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: Insets.xl),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Insets.s),
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: Insets.xl),
+              ),
             ),
           ),
           trailing ?? const SizedBox(),
