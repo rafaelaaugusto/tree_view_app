@@ -11,15 +11,21 @@ class TreeNode {
     required this.id,
     required this.name,
     required this.children,
-    required this.leading,
+    this.leading,
     this.trailing,
   });
 
   final String id;
   final String name;
   final List<TreeNode> children;
-  final Widget leading;
+  final Widget? leading;
   final Widget? trailing;
+
+  factory TreeNode.treeDefault() => const TreeNode(
+        id: 'root',
+        name: 'Root',
+        children: [],
+      );
 }
 
 TreeNode buildTree(
@@ -48,6 +54,9 @@ TreeNode buildTree(
       id: asset.id,
       name: asset.name,
       iconData: EvaIcons.cube_outline,
+      trailingIconData:
+          asset.status == Status.alert ? Icons.circle_rounded : null,
+      trailingColor: asset.status == Status.alert ? Colors.red : null,
     );
   }
 
@@ -108,7 +117,7 @@ TreeNode buildTree(
 TreeNode createTreeNode({
   required String id,
   required String name,
-  required IconData iconData,
+  IconData? iconData,
   IconData? trailingIconData,
   Color? trailingColor,
 }) {

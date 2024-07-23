@@ -5,16 +5,17 @@ class NodeExpansionTile extends StatelessWidget {
   const NodeExpansionTile({
     super.key,
     required this.title,
-    required this.leading,
     required this.children,
     required this.hasChildren,
+    this.leading,
     this.trailing,
   });
 
   final String title;
-  final Widget leading;
+
   final List<Widget> children;
   final bool hasChildren;
+  final Widget? leading;
   final Widget? trailing;
 
   @override
@@ -29,7 +30,7 @@ class NodeExpansionTile extends StatelessWidget {
             const Icon(
               Icons.keyboard_arrow_down_rounded,
             ),
-          leading,
+          leading ?? const SizedBox(),
           Flexible(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Insets.s),

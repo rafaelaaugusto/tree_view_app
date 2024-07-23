@@ -9,12 +9,12 @@ class AssetView extends StatelessWidget {
     super.key,
     required this.root,
     required this.filterSelected,
-    required this.applyFilter,
+    required this.selectFilter,
   });
 
   final TreeNode root;
   final List<bool> filterSelected;
-  final Function(int) applyFilter;
+  final Function(int) selectFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class AssetView extends StatelessWidget {
       children: [
         SearchFilter(
           isSelected: filterSelected,
-          applyFilter: applyFilter,
+          selectFilter: selectFilter,
         ),
         const Divider(),
         TreeListView(root: root),

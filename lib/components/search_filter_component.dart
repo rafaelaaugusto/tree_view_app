@@ -8,11 +8,11 @@ class SearchFilter extends StatelessWidget {
   const SearchFilter({
     super.key,
     required this.isSelected,
-    required this.applyFilter,
+    required this.selectFilter,
   });
 
   final List<bool> isSelected;
-  final Function(int) applyFilter;
+  final Function(int) selectFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class SearchFilter extends StatelessWidget {
           ToggleButtons(
             fillColor: Colors.white,
             splashColor: Colors.white,
-            onPressed: applyFilter,
+            onPressed: selectFilter,
             isSelected: isSelected,
             renderBorder: false,
             children: [
