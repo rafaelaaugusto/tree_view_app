@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../models/asset_model.dart';
 import '../models/location_model.dart';
 import '../services/api_service.dart';
+import '../utils/filter_builder.dart';
 import '../utils/tree_builder.dart';
 import '../views/asset_view.dart';
 
@@ -25,9 +26,9 @@ class _AssetPageState extends State<AssetPage> {
   List<bool> filterSelected = List.filled(2, false);
   List<LocationModel> locationsData = [];
   List<AssetModel> assetsData = [];
-  late final TreeNode root;
   String searchTerm = '';
   bool hasError = false;
+  TreeNode root = TreeNode.treeDefault();
 
   @override
   initState() {
@@ -40,16 +41,21 @@ class _AssetPageState extends State<AssetPage> {
       locationsData =
           await compute(apiService.fetchLocations, widget.companyId);
       assetsData = await compute(apiService.fetchAssets, widget.companyId);
+      root = buildTree(locationsData, assetsData);
     } catch (e) {
       hasError = true;
     }
-    root = buildTree(locationsData, assetsData);
     setState(() {});
   }
 
-  void applyFilter(int index) {
+  void selectFilter(int index) {
     filterSelected = List.filled(2, false);
     filterSelected[index] = true;
+    if (index == 0) {
+      root = applyEnergySensorFilter(locationsData, assetsData);
+    } else {
+      root = applyCriticalAssetsFilter(locationsData, assetsData);
+    }
     setState(() {});
   }
 
@@ -63,9 +69,9 @@ class _AssetPageState extends State<AssetPage> {
           ? const Center(child: Text('Erro ao carregar ativos.'))
           : locationsData.isNotBlank && assetsData.isNotBlank
               ? AssetView(
-                  root: buildTree(locationsData, assetsData),
+                  root: root,
                   filterSelected: filterSelected,
-                  applyFilter: applyFilter,
+                  selectFilter: selectFilter,
                 )
               : const Center(child: CircularProgressIndicator()),
     );
