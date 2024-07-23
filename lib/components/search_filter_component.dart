@@ -9,10 +9,12 @@ class SearchFilter extends StatelessWidget {
     super.key,
     required this.isSelected,
     required this.selectFilter,
+    required this.resetFilter,
   });
 
   final List<bool> isSelected;
   final Function(int) selectFilter;
+  final Function() resetFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +33,37 @@ class SearchFilter extends StatelessWidget {
               border: InputBorder.none,
             ),
           ),
-          ToggleButtons(
-            fillColor: Colors.white,
-            splashColor: Colors.white,
-            onPressed: selectFilter,
-            isSelected: isSelected,
-            renderBorder: false,
+          Row(
             children: [
-              FilterCard(
-                name: 'Sensor de energia',
-                leading: FontAwesome.bolt_solid,
-                isSelected: isSelected[0],
+              ToggleButtons(
+                fillColor: Colors.white,
+                splashColor: Colors.white,
+                onPressed: selectFilter,
+                isSelected: isSelected,
+                renderBorder: false,
+                children: [
+                  FilterCard(
+                    name: 'Sensor de energia',
+                    leading: FontAwesome.bolt_solid,
+                    isSelected: isSelected[0],
+                  ),
+                  FilterCard(
+                    name: 'Crítico',
+                    leading: Icons.info_outline,
+                    isSelected: isSelected[1],
+                  ),
+                ],
               ),
-              FilterCard(
-                name: 'Crítico',
-                leading: Icons.info_outline,
-                isSelected: isSelected[1],
-              )
+              if (isSelected.contains(true))
+                IconButton(
+                  onPressed: resetFilter,
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.black,
+                  ),
+                ),
             ],
-          )
+          ),
         ],
       ),
     );

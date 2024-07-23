@@ -48,8 +48,15 @@ class _AssetPageState extends State<AssetPage> {
     setState(() {});
   }
 
+  void resetFilter() {
+    setState(() {
+      filterSelected = List.filled(2, false);
+      root = buildTree(locationsData, assetsData);
+    });
+  }
+
   void selectFilter(int index) {
-    filterSelected = List.filled(2, false);
+    resetFilter();
     filterSelected[index] = true;
     if (index == 0) {
       root = applyEnergySensorFilter(locationsData, assetsData);
@@ -72,6 +79,7 @@ class _AssetPageState extends State<AssetPage> {
                   root: root,
                   filterSelected: filterSelected,
                   selectFilter: selectFilter,
+                  resetFilter: resetFilter,
                 )
               : const Center(child: CircularProgressIndicator()),
     );
