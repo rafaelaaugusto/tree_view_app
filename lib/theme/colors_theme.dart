@@ -5,6 +5,8 @@ const onPrimary = Color(0XFFFFFFFF);
 const onSecondary = Color(0XFF17192D);
 const secondary = Color(0XFF17192D);
 const tertiary = Color(0XFFEAEFF3);
+const criticalIconColor = Colors.red;
+const sensorIconColor = Colors.green;
 
 const colorScheme = ColorScheme.light(
   primary: primary,

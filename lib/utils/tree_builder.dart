@@ -33,63 +33,30 @@ TreeNode buildTree(
   List<AssetModel> assetsData,
 ) {
   Map<String, TreeNode> nodeMap = {};
+  final assets = assetsData.where((asset) => asset.gatewayId == null).toList();
+  final components =
+      assetsData.where((component) => component.gatewayId.isNotBlank).toList();
 
-  final assets = assetsData.where(
-    (asset) => asset.gatewayId == null,
+  createTreeNodes(
+    nodeMap: nodeMap,
+    items: locationsData,
+    leading: EvaIcons.pin_outline,
   );
-  final components = assetsData.where(
-    (component) => component.gatewayId.isNotBlank,
+  createTreeNodes(
+    nodeMap: nodeMap,
+    items: assets,
+    leading: EvaIcons.cube_outline,
+    hasTrailing: true,
+  );
+  createTreeNodes(
+    nodeMap: nodeMap,
+    items: components,
+    leading: AntDesign.codepen_outline,
+    hasTrailing: true,
   );
 
-  for (var location in locationsData) {
-    nodeMap[location.id] = createTreeNode(
-      id: location.id,
-      name: location.name,
-      iconData: EvaIcons.pin_outline,
-    );
-  }
-
-  for (var asset in assets) {
-    nodeMap[asset.id] = createTreeNode(
-      id: asset.id,
-      name: asset.name,
-      iconData: EvaIcons.cube_outline,
-      trailingIconData:
-          asset.status == Status.alert ? Icons.circle_rounded : null,
-      trailingColor: asset.status == Status.alert ? Colors.red : null,
-    );
-  }
-
-  for (var component in components) {
-    nodeMap[component.id] = createTreeNode(
-      id: component.id,
-      name: component.name,
-      iconData: AntDesign.codepen_outline,
-      trailingIconData: component.status == Status.alert
-          ? Icons.circle_rounded
-          : FontAwesome.bolt_solid,
-      trailingColor:
-          component.status == Status.alert ? Colors.red : Colors.green,
-    );
-  }
-
-  for (var asset in assets) {
-    if (asset.parentId != null && nodeMap.containsKey(asset.parentId)) {
-      nodeMap[asset.parentId]!.children.add(nodeMap[asset.id]!);
-    } else if (asset.locationId != null &&
-        nodeMap.containsKey(asset.locationId)) {
-      nodeMap[asset.locationId]!.children.add(nodeMap[asset.id]!);
-    }
-  }
-
-  for (var component in components) {
-    if (component.parentId != null && nodeMap.containsKey(component.parentId)) {
-      nodeMap[component.parentId]!.children.add(nodeMap[component.id]!);
-    } else if (component.locationId != null &&
-        nodeMap.containsKey(component.locationId)) {
-      nodeMap[component.locationId]!.children.add(nodeMap[component.id]!);
-    }
-  }
+  assignChildrenToNodes(nodeMap: nodeMap, items: assets);
+  assignChildrenToNodes(nodeMap: nodeMap, items: components);
 
   for (var location in locationsData) {
     if (location.parentId != null && nodeMap.containsKey(location.parentId)) {
@@ -110,28 +77,50 @@ TreeNode buildTree(
     id: 'root',
     name: 'Root',
     children: roots,
-    leading: const SizedBox(),
   );
 }
 
-TreeNode createTreeNode({
-  required String id,
-  required String name,
-  IconData? iconData,
-  IconData? trailingIconData,
-  Color? trailingColor,
+void assignChildrenToNodes({
+  required Map<String, TreeNode> nodeMap,
+  required List<dynamic> items,
 }) {
-  return TreeNode(
-    id: id,
-    name: name,
-    children: [],
-    leading: Icon(iconData, color: primary),
-    trailing: trailingIconData != null
-        ? Icon(
-            trailingIconData,
-            size: Insets.xl,
-            color: trailingColor,
-          )
-        : null,
+  for (var item in items) {
+    if (item.parentId != null && nodeMap.containsKey(item.parentId)) {
+      nodeMap[item.parentId]!.children.add(nodeMap[item.id]!);
+    } else if (item.locationId != null &&
+        nodeMap.containsKey(item.locationId)) {
+      nodeMap[item.locationId]!.children.add(nodeMap[item.id]!);
+    }
+  }
+}
+
+Widget getAssetTrailing(dynamic item) {
+  bool isCritical = item.status == Status.alert;
+
+  return Icon(
+    isCritical
+        ? Icons.circle_rounded
+        : item.sensorType != null
+            ? FontAwesome.bolt_solid
+            : null,
+    size: Insets.xl,
+    color: isCritical ? criticalIconColor : sensorIconColor,
   );
+}
+
+void createTreeNodes({
+  required Map<String, TreeNode> nodeMap,
+  required List<dynamic> items,
+  required IconData leading,
+  bool hasTrailing = false,
+}) {
+  for (var item in items) {
+    nodeMap[item.id] = TreeNode(
+      id: item.id,
+      name: item.name,
+      leading: Icon(leading, color: primary),
+      children: [],
+      trailing: hasTrailing ? getAssetTrailing(item) : null,
+    );
+  }
 }
