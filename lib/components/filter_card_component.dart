@@ -22,7 +22,7 @@ class FilterCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Insets.s),
         side: BorderSide(
-          color: isSelected ? primary : Colors.black.withOpacity(0.6),
+          color: isSelected ? primary : secondary.withOpacity(0.6),
         ),
       ),
       color: isSelected
@@ -38,7 +38,7 @@ class FilterCard extends StatelessWidget {
               size: Insets.xxl,
               color: isSelected
                   ? Theme.of(context).colorScheme.onPrimary
-                  : Colors.black,
+                  : Theme.of(context).colorScheme.secondary,
             ),
             const SizedBox(width: Insets.xs),
             Text(
@@ -47,7 +47,7 @@ class FilterCard extends StatelessWidget {
                 fontSize: Insets.xl,
                 color: isSelected
                     ? Theme.of(context).colorScheme.onPrimary
-                    : Colors.black,
+                    : Theme.of(context).colorScheme.secondary,
               ),
             ),
           ],

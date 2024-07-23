@@ -2,6 +2,7 @@ import 'package:fleasy/fleasy.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
+import '../theme/colors_theme.dart';
 import 'filter_card_component.dart';
 
 class SearchFilter extends StatelessWidget {
@@ -28,7 +29,7 @@ class SearchFilter extends StatelessWidget {
               hintText: 'Buscar Ativo ou Local',
               prefixIcon: Icon(Icons.search),
               filled: true,
-              fillColor: Color(0XFFEAEFF3),
+              fillColor: inputColor,
               contentPadding: EdgeInsets.all(Insets.l),
               border: InputBorder.none,
             ),
@@ -36,11 +37,11 @@ class SearchFilter extends StatelessWidget {
           Row(
             children: [
               ToggleButtons(
-                fillColor: Colors.white,
-                splashColor: Colors.white,
                 onPressed: selectFilter,
                 isSelected: isSelected,
                 renderBorder: false,
+                fillColor: Theme.of(context).colorScheme.onPrimary,
+                splashColor: Theme.of(context).colorScheme.onPrimary,
                 children: [
                   FilterCard(
                     name: 'Sensor de energia',
@@ -57,9 +58,9 @@ class SearchFilter extends StatelessWidget {
               if (isSelected.contains(true))
                 IconButton(
                   onPressed: resetFilter,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.close,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
             ],
