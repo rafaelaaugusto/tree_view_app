@@ -10,11 +10,13 @@ class SearchFilter extends StatelessWidget {
     super.key,
     required this.isSelected,
     required this.selectFilter,
+    required this.filterText,
     required this.resetFilter,
   });
 
   final List<bool> isSelected;
   final Function(int) selectFilter;
+  final Function(String) filterText;
   final Function() resetFilter;
 
   @override
@@ -24,8 +26,9 @@ class SearchFilter extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TextField(
-            decoration: InputDecoration(
+          TextField(
+            onChanged: filterText,
+            decoration: const InputDecoration(
               hintText: 'Buscar Ativo ou Local',
               prefixIcon: Icon(Icons.search),
               filled: true,

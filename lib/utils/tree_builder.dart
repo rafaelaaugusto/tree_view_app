@@ -5,6 +5,7 @@ import 'package:icons_plus/icons_plus.dart';
 import '../models/asset_model.dart';
 import '../models/location_model.dart';
 import '../theme/colors_theme.dart';
+import 'helper_functions.dart';
 
 class TreeNode {
   const TreeNode({
@@ -33,13 +34,20 @@ TreeNode buildTree(
   List<AssetModel> assetsData,
 ) {
   Map<String, TreeNode> nodeMap = {};
-  final assets = assetsData.where((asset) => asset.gatewayId == null).toList();
-  final components =
-      assetsData.where((component) => component.gatewayId.isNotBlank).toList();
+
+  List<LocationModel> uniqueLocations =
+      removeLocationsDuplicates(locationsData);
+  List<AssetModel> uniqueAssets = removeAssetsDuplicates(assetsData);
+
+  final assets =
+      uniqueAssets.where((asset) => asset.gatewayId == null).toList();
+  final components = uniqueAssets
+      .where((component) => component.gatewayId.isNotBlank)
+      .toList();
 
   createTreeNodes(
     nodeMap: nodeMap,
-    items: locationsData,
+    items: uniqueLocations,
     leading: EvaIcons.pin_outline,
   );
   createTreeNodes(
@@ -58,16 +66,16 @@ TreeNode buildTree(
   assignChildrenToNodes(nodeMap: nodeMap, items: assets);
   assignChildrenToNodes(nodeMap: nodeMap, items: components);
 
-  for (var location in locationsData) {
+  for (var location in uniqueLocations) {
     if (location.parentId != null && nodeMap.containsKey(location.parentId)) {
       nodeMap[location.parentId!]!.children.add(nodeMap[location.id]!);
     }
   }
 
   List<TreeNode> roots = nodeMap.values.where((node) {
-    return locationsData
+    return uniqueLocations
             .any((loc) => loc.id == node.id && loc.parentId == null) ||
-        assetsData.any((asset) =>
+        uniqueAssets.any((asset) =>
             asset.id == node.id &&
             asset.parentId == null &&
             asset.locationId == null);

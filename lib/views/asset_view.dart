@@ -10,12 +10,14 @@ class AssetView extends StatelessWidget {
     required this.root,
     required this.filterSelected,
     required this.selectFilter,
+    required this.filterText,
     required this.resetFilter,
   });
 
   final TreeNode root;
   final List<bool> filterSelected;
   final Function(int) selectFilter;
+  final Function(String) filterText;
   final Function() resetFilter;
 
   @override
@@ -23,6 +25,7 @@ class AssetView extends StatelessWidget {
     return Column(
       children: [
         SearchFilter(
+          filterText: filterText,
           isSelected: filterSelected,
           selectFilter: selectFilter,
           resetFilter: resetFilter,

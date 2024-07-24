@@ -66,6 +66,12 @@ class _AssetPageState extends State<AssetPage> {
     setState(() {});
   }
 
+  void filterText(String term) {
+    resetFilter();
+    root = applyTextFilter(locationsData, assetsData, term);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +86,7 @@ class _AssetPageState extends State<AssetPage> {
                   filterSelected: filterSelected,
                   selectFilter: selectFilter,
                   resetFilter: resetFilter,
+                  filterText: filterText,
                 )
               : const Center(child: CircularProgressIndicator()),
     );
