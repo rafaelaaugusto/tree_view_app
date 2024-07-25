@@ -22,6 +22,7 @@ class NodeExpansionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpansionTile(
       dense: true,
+      initiallyExpanded: true,
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
