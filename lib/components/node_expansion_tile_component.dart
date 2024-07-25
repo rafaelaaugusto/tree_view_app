@@ -12,7 +12,6 @@ class NodeExpansionTile extends StatelessWidget {
   });
 
   final String title;
-
   final List<Widget> children;
   final bool hasChildren;
   final Widget? leading;

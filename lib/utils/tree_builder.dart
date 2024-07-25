@@ -34,6 +34,9 @@ TreeNode buildTree(
   List<AssetModel> assetsData,
 ) {
   Map<String, TreeNode> nodeMap = {};
+  List<TreeNode> rootLocations = [];
+  List<TreeNode> rootAssets = [];
+  List<TreeNode> rootsComponents = [];
 
   List<LocationModel> uniqueLocations =
       removeLocationsDuplicates(locationsData);
@@ -49,18 +52,20 @@ TreeNode buildTree(
     nodeMap: nodeMap,
     items: uniqueLocations,
     leading: EvaIcons.pin_outline,
+    hasTrailing: false,
+    root: rootLocations,
   );
   createTreeNodes(
     nodeMap: nodeMap,
     items: assets,
     leading: EvaIcons.cube_outline,
-    hasTrailing: true,
+    root: rootAssets,
   );
   createTreeNodes(
     nodeMap: nodeMap,
     items: components,
     leading: AntDesign.codepen_outline,
-    hasTrailing: true,
+    root: rootsComponents,
   );
 
   assignChildrenToNodes(nodeMap: nodeMap, items: assets);
@@ -72,14 +77,11 @@ TreeNode buildTree(
     }
   }
 
-  List<TreeNode> roots = nodeMap.values.where((node) {
-    return uniqueLocations
-            .any((loc) => loc.id == node.id && loc.parentId == null) ||
-        uniqueAssets.any((asset) =>
-            asset.id == node.id &&
-            asset.parentId == null &&
-            asset.locationId == null);
-  }).toList();
+  List<TreeNode> roots = [
+    ...rootLocations,
+    ...rootAssets,
+    ...rootsComponents,
+  ].toList();
 
   return TreeNode(
     id: 'root',
@@ -120,15 +122,26 @@ void createTreeNodes({
   required Map<String, TreeNode> nodeMap,
   required List<dynamic> items,
   required IconData leading,
-  bool hasTrailing = false,
+  List<dynamic> root = const [],
+  bool hasTrailing = true,
 }) {
   for (var item in items) {
-    nodeMap[item.id] = TreeNode(
+    TreeNode node = TreeNode(
       id: item.id,
       name: item.name,
-      leading: Icon(leading, color: primary),
       children: [],
+      leading: Icon(leading, color: primary),
       trailing: hasTrailing ? getAssetTrailing(item) : null,
     );
+    nodeMap[item.id] = node;
+
+    if (item is AssetModel &&
+        item.parentId == null &&
+        item.locationId == null) {
+      root.add(node);
+    }
+    if (item is LocationModel && item.parentId == null) {
+      root.add(node);
+    }
   }
 }

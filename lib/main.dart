@@ -25,6 +25,7 @@ class _AppState extends ConsumerState<App> {
     final defaultTheme = ref.read(themeProvider);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: defaultTheme.theme,
       initialRoute: '/home',
       routes: {
