@@ -23,14 +23,13 @@ class AssetPage extends StatefulWidget {
 
 class _AssetPageState extends State<AssetPage> {
   final ApiService apiService = ApiService();
+  List<LocationModel> locationsData = [];
+  List<AssetModel> assetsData = [];
   List<bool> filterSelected = List.filled(2, false);
   TreeNode root = TreeNode.treeDefault();
   TreeNode wholeTree = TreeNode.treeDefault();
   TreeNode treeWithEnergySensors = TreeNode.treeDefault();
   TreeNode treeWithCriticalAssets = TreeNode.treeDefault();
-  List<LocationModel> locationsData = [];
-  List<AssetModel> assetsData = [];
-  String searchTerm = '';
   bool hasError = false;
 
   @override
