@@ -1,7 +1,7 @@
 import 'package:fleasy/fleasy.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../components/loading_component.dart';
 import '../models/asset_model.dart';
 import '../models/location_model.dart';
 import '../services/api_service.dart';
@@ -38,9 +38,12 @@ class _AssetPageState extends State<AssetPage> {
 
   Future<void> fetchDataAndBuildTreeNode() async {
     try {
-      locationsData =
-          await compute(apiService.fetchLocations, widget.companyId);
-      assetsData = await compute(apiService.fetchAssets, widget.companyId);
+      final locationsFuture = apiService.fetchLocations(widget.companyId);
+      final assetsFuture = apiService.fetchAssets(widget.companyId);
+
+      locationsData = await locationsFuture;
+      assetsData = await assetsFuture;
+
       root = buildTree(locationsData, assetsData);
     } catch (e) {
       hasError = true;
@@ -88,7 +91,7 @@ class _AssetPageState extends State<AssetPage> {
                   resetFilter: resetFilter,
                   filterText: filterText,
                 )
-              : const Center(child: CircularProgressIndicator()),
+              : const Loading(),
     );
   }
 }

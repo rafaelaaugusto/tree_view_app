@@ -1,5 +1,7 @@
+import 'package:fleasy/fleasy.dart';
 import 'package:flutter/material.dart';
 
+import '../components/loading_component.dart';
 import '../models/company_model.dart';
 import '../services/api_service.dart';
 import '../views/home_view.dart';
@@ -33,10 +35,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('TRACTIAN'),
       ),
-      body: HomeView(
-        companies: companies,
-        navigateToAssetPage: navigateToAssetPage,
-      ),
+      body: companies.isNotBlank
+          ? HomeView(
+              companies: companies,
+              navigateToAssetPage: navigateToAssetPage,
+            )
+          : const Loading(),
     );
   }
 
