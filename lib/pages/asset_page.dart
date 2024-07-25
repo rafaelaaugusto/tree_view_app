@@ -25,6 +25,9 @@ class _AssetPageState extends State<AssetPage> {
   final ApiService apiService = ApiService();
   List<bool> filterSelected = List.filled(2, false);
   TreeNode root = TreeNode.treeDefault();
+  TreeNode wholeTree = TreeNode.treeDefault();
+  TreeNode treeWithEnergySensors = TreeNode.treeDefault();
+  TreeNode treeWithCriticalAssets = TreeNode.treeDefault();
   List<LocationModel> locationsData = [];
   List<AssetModel> assetsData = [];
   String searchTerm = '';
@@ -45,26 +48,37 @@ class _AssetPageState extends State<AssetPage> {
       assetsData = await assetsFuture;
 
       root = buildTree(locationsData, assetsData);
+      wholeTree = root;
+      createFilteredTrees();
     } catch (e) {
       hasError = true;
     }
     setState(() {});
   }
 
-  void resetFilter() {
+  void createFilteredTrees() {
     setState(() {
-      filterSelected = List.filled(2, false);
-      root = buildTree(locationsData, assetsData);
+      treeWithEnergySensors =
+          applyEnergySensorFilter(locationsData, assetsData);
+      treeWithCriticalAssets =
+          applyCriticalAssetsFilter(locationsData, assetsData);
     });
   }
 
-  void selectFilter(int index) {
+  void resetFilter() {
+    setState(() {
+      filterSelected = List.filled(2, false);
+      root = wholeTree;
+    });
+  }
+
+  void selectFilter(int index) async {
     resetFilter();
     filterSelected[index] = true;
     if (index == 0) {
-      root = applyEnergySensorFilter(locationsData, assetsData);
+      root = treeWithEnergySensors;
     } else {
-      root = applyCriticalAssetsFilter(locationsData, assetsData);
+      root = treeWithCriticalAssets;
     }
     setState(() {});
   }
