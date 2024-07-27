@@ -12,12 +12,14 @@ class SearchFilter extends StatelessWidget {
     required this.selectFilter,
     required this.filterText,
     required this.resetFilter,
+    required this.resultCount,
   });
 
   final List<bool> isSelected;
   final Function(int) selectFilter;
   final Function(String) filterText;
   final Function() resetFilter;
+  final int resultCount;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class SearchFilter extends StatelessWidget {
             ),
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               ToggleButtons(
                 onPressed: selectFilter,
@@ -68,6 +71,10 @@ class SearchFilter extends StatelessWidget {
                 ),
             ],
           ),
+          if (isSelected[0] == true)
+            Text('$resultCount sensores de energia encontrados.'),
+          if (isSelected[1] == true)
+            Text('$resultCount ativos com estado crítico encontrados.'),
         ],
       ),
     );

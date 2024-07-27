@@ -5,6 +5,7 @@ import 'tree_builder.dart';
 TreeNode filterByEnergySensor(
   List<LocationModel> locationsData,
   List<AssetModel> assetsData,
+  Function(int) resultCount,
 ) {
   final components = assetsData
       .where(
@@ -14,6 +15,8 @@ TreeNode filterByEnergySensor(
             component.sensorType != null,
       )
       .toList();
+
+  resultCount(components.length);
 
   return filterAssetsAndLocations(
     locationsData,
@@ -25,10 +28,13 @@ TreeNode filterByEnergySensor(
 TreeNode filterByCriticalAssets(
   List<LocationModel> locationsData,
   List<AssetModel> assetsData,
+  Function(int) resultCount,
 ) {
   final components = assetsData
       .where((component) => component.status == Status.alert)
       .toList();
+
+  resultCount(components.length);
 
   return filterAssetsAndLocations(
     locationsData,

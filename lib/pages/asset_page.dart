@@ -29,6 +29,7 @@ class _AssetPageState extends State<AssetPage> {
   TreeNode root = TreeNode.treeDefault();
   TreeNode wholeTree = TreeNode.treeDefault();
   bool hasError = false;
+  int resultCount = 0;
 
   @override
   initState() {
@@ -68,9 +69,21 @@ class _AssetPageState extends State<AssetPage> {
     filterSelected[index] = true;
 
     if (index == 0) {
-      root = filterByEnergySensor(locationsData, assetsData);
+      root = filterByEnergySensor(
+        locationsData,
+        assetsData,
+        (result) {
+          resultCount = result;
+        },
+      );
     } else {
-      root = filterByCriticalAssets(locationsData, assetsData);
+      root = filterByCriticalAssets(
+        locationsData,
+        assetsData,
+        (result) {
+          resultCount = result;
+        },
+      );
     }
     setState(() {});
   }
@@ -100,6 +113,7 @@ class _AssetPageState extends State<AssetPage> {
                   selectFilter: selectFilter,
                   resetFilter: resetFilter,
                   filterText: filterText,
+                  resultCount: resultCount,
                 )
               : const Loading(),
     );
