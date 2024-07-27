@@ -32,6 +32,7 @@ class SearchFilter extends StatelessWidget {
             onChanged: filterText,
             decoration: const InputDecoration(
               hintText: 'Buscar Ativo ou Local',
+              hintStyle: TextStyle(color: hintColor),
               prefixIcon: Icon(Icons.search),
               filled: true,
               fillColor: inputColor,
