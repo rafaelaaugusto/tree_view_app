@@ -4,6 +4,7 @@
 A Flutter application for visualizing and managing company assets in a tree structure.
 
 ## Demonstration
+https://youtu.be/uUvv0nw4-bo
 
 ## Features
 - Visualization of assets and locations.
