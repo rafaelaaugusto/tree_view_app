@@ -8,6 +8,7 @@ const tertiary = Color(0XFFEAEFF3);
 const criticalIconColor = Colors.red;
 const sensorIconColor = Colors.green;
 const inputColor = Color(0XFFEAEFF3);
+const hintColor = Color(0XFF8E98A3);
 
 const colorScheme = ColorScheme.light(
   primary: primary,
