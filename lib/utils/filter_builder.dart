@@ -2,7 +2,7 @@ import '../models/asset_model.dart';
 import '../models/location_model.dart';
 import 'tree_builder.dart';
 
-TreeNode applyEnergySensorFilter(
+TreeNode filterByEnergySensor(
   List<LocationModel> locationsData,
   List<AssetModel> assetsData,
 ) {
@@ -15,10 +15,14 @@ TreeNode applyEnergySensorFilter(
       )
       .toList();
 
-  return applyFilter(locationsData, assetsData, components);
+  return filterAssetsAndLocations(
+    locationsData,
+    assetsData,
+    components,
+  );
 }
 
-TreeNode applyCriticalAssetsFilter(
+TreeNode filterByCriticalAssets(
   List<LocationModel> locationsData,
   List<AssetModel> assetsData,
 ) {
@@ -26,110 +30,71 @@ TreeNode applyCriticalAssetsFilter(
       .where((component) => component.status == Status.alert)
       .toList();
 
-  return applyFilter(locationsData, assetsData, components);
+  return filterAssetsAndLocations(
+    locationsData,
+    assetsData,
+    components,
+  );
 }
 
-TreeNode applyTextFilter(
+TreeNode filterByText(
   List<LocationModel> locationsData,
   List<AssetModel> assetsData,
   String term,
 ) {
-  final assets = assetsData
+  final assetsWithTerm = assetsData
       .where((asset) => asset.name.toLowerCase().contains(term))
       .toList();
+  final subAssets = filterAssetsByAssets(assetsData, assetsWithTerm);
+  final assets = filterAssetsByAssets(assetsData, subAssets);
 
-  final locations = locationsData
-      .where((loc) => loc.name.toLowerCase().contains(term))
-      .toList();
-
-  final assetsWithSubAssets = filterAssetsByAssets(assetsData, assets);
-  final components = filterAssetsByAssets(assetsData, assetsWithSubAssets);
-
-  final locationsWithAssets = filterLocationsByAssets(locationsData, assets);
-  final locationsWithSubAssets =
-      filterLocationsByAssets(locationsData, assetsWithSubAssets);
-  final subLocationsWithComponents =
-      filterLocationsByAssets(locationsData, components);
-
-  final locationsWithSubLocations =
-      filterLocationsByLocations(locationsData, locations);
-  final locationsWithSubLocationsWithAssets =
-      filterLocationsByLocations(locationsData, locationsWithAssets);
-  final locationsWithSubLocationsWithSubAssets =
-      filterLocationsByLocations(locationsData, locationsWithSubAssets);
-  final locationsWithsubLocationsWithComponents =
-      filterLocationsByLocations(locationsData, subLocationsWithComponents);
-
-  return buildTree([
-    ...locations,
-    ...locationsWithAssets,
-    ...locationsWithSubLocations,
-    ...locationsWithSubAssets,
-    ...locationsWithSubLocationsWithAssets,
-    ...locationsWithSubLocationsWithSubAssets,
-    ...subLocationsWithComponents,
-    ...locationsWithsubLocationsWithComponents,
-  ], [
+  List<AssetModel> uniqueAssets = removeAssetsDuplicates([
     ...assets,
-    ...assetsWithSubAssets,
-    ...components,
+    ...subAssets,
+    ...assetsWithTerm,
   ]);
+
+  return buildTree(
+    locationsData: locationsData,
+    assetsData: uniqueAssets,
+    term: term,
+  );
 }
 
-TreeNode applyFilter(
+TreeNode filterAssetsAndLocations(
   List<LocationModel> locationsData,
   List<AssetModel> assetsData,
   List<AssetModel> components,
 ) {
-  final assetsWithComponents = filterAssetsByAssets(assetsData, components);
-  final assetsWithSubAssets =
-      filterAssetsByAssets(assetsData, assetsWithComponents);
+  final subAssets = filterAssetsByAssets(assetsData, components);
+  final assets = filterAssetsByAssets(assetsData, subAssets);
 
-  final locationsWithComponents =
-      filterLocationsByAssets(locationsData, components);
-  final locationsWithAssets =
-      filterLocationsByAssets(locationsData, assetsWithSubAssets);
-  final locationsWithSubAssets =
-      filterLocationsByAssets(locationsData, assetsWithComponents);
-
-  final locationsWithSubLocations =
-      filterLocationsByLocations(locationsData, locationsWithComponents);
-  final locationsWithSubLocationsWithAssets =
-      filterLocationsByLocations(locationsData, locationsWithAssets);
-  final locationsWithSubLocationsWithSubAssets =
-      filterLocationsByLocations(locationsData, locationsWithSubAssets);
-
-  return buildTree([
-    ...locationsWithComponents,
-    ...locationsWithAssets,
-    ...locationsWithSubAssets,
-    ...locationsWithSubLocations,
-    ...locationsWithSubLocationsWithAssets,
-    ...locationsWithSubLocationsWithSubAssets,
-  ], [
-    ...assetsWithComponents,
-    ...assetsWithSubAssets,
-    ...components,
-  ]);
+  return buildTree(
+    locationsData: locationsData,
+    assetsData: [...assets, ...subAssets],
+    componentsData: components,
+    shouldFilter: true,
+  );
 }
 
 List<AssetModel> filterAssetsByAssets(
-    List<AssetModel> assetsData, List<AssetModel> assets) {
-  return assetsData
-      .where((asset) => assets.any((subAsset) => asset.id == subAsset.parentId))
-      .toList();
+  List<AssetModel> allAssets,
+  List<AssetModel> parentAssets,
+) {
+  final parentIds = parentAssets.map((asset) => asset.parentId).toSet();
+
+  return allAssets.where((asset) => parentIds.contains(asset.id)).toList();
 }
 
-List<LocationModel> filterLocationsByAssets(
-    List<LocationModel> locationsData, List<AssetModel> assets) {
-  return locationsData
-      .where((loc) => assets.any((asset) => loc.id == asset.locationId))
-      .toList();
-}
+List<AssetModel> removeAssetsDuplicates(List<AssetModel> assets) {
+  final Set<String> ids = {};
+  final List<AssetModel> uniqueAssets = [];
 
-List<LocationModel> filterLocationsByLocations(
-    List<LocationModel> locationsData, List<LocationModel> locations) {
-  return locationsData
-      .where((loc) => locations.any((subLoc) => loc.id == subLoc.parentId))
-      .toList();
+  for (var asset in assets) {
+    if (!ids.contains(asset.id)) {
+      ids.add(asset.id);
+      uniqueAssets.add(asset);
+    }
+  }
+  return uniqueAssets;
 }

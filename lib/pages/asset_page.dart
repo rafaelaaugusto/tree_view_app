@@ -28,8 +28,6 @@ class _AssetPageState extends State<AssetPage> {
   List<bool> filterSelected = List.filled(2, false);
   TreeNode root = TreeNode.treeDefault();
   TreeNode wholeTree = TreeNode.treeDefault();
-  TreeNode treeWithEnergySensors = TreeNode.treeDefault();
-  TreeNode treeWithCriticalAssets = TreeNode.treeDefault();
   bool hasError = false;
 
   @override
@@ -46,22 +44,16 @@ class _AssetPageState extends State<AssetPage> {
       locationsData = await locationsFuture;
       assetsData = await assetsFuture;
 
-      root = buildTree(locationsData, assetsData);
+      root = buildTree(
+        locationsData: locationsData,
+        assetsData: assetsData,
+      );
+
       wholeTree = root;
-      createFilteredTrees();
     } catch (e) {
       hasError = true;
     }
     setState(() {});
-  }
-
-  void createFilteredTrees() {
-    setState(() {
-      treeWithEnergySensors =
-          applyEnergySensorFilter(locationsData, assetsData);
-      treeWithCriticalAssets =
-          applyCriticalAssetsFilter(locationsData, assetsData);
-    });
   }
 
   void resetFilter() {
@@ -71,20 +63,25 @@ class _AssetPageState extends State<AssetPage> {
     });
   }
 
-  void selectFilter(int index) async {
+  void selectFilter(int index) {
     resetFilter();
     filterSelected[index] = true;
+
     if (index == 0) {
-      root = treeWithEnergySensors;
+      root = filterByEnergySensor(locationsData, assetsData);
     } else {
-      root = treeWithCriticalAssets;
+      root = filterByCriticalAssets(locationsData, assetsData);
     }
     setState(() {});
   }
 
   void filterText(String term) {
     resetFilter();
-    root = applyTextFilter(locationsData, assetsData, term);
+    root = filterByText(
+      locationsData,
+      assetsData,
+      term,
+    );
     setState(() {});
   }
 
