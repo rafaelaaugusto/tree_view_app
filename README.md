@@ -1,14 +1,14 @@
 # tree_view_app
 
 ## Description
-A Flutter application for visualizing and managing company assets in a tree structure.
+A Flutter app to view and filter company assets in a tree structure.
 
 ## Demonstration
 https://youtu.be/uUvv0nw4-bo
 
 ## Features
 - Visualization of assets and locations.
-- Energy sensor, critical assets, and text search filters.
+- Filter for energy sensors, critical assets and text search.
 - REST API integration.
 
 ## Installation
