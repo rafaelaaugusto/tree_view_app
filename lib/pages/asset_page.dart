@@ -102,7 +102,12 @@ class _AssetPageState extends State<AssetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Assets'),
+        title: const Text(
+          'Assets',
+          style: TextStyle(
+            fontSize: Insets.xxl,
+          ),
+        ),
       ),
       body: hasError
           ? const Center(child: Text('Erro ao carregar ativos.'))

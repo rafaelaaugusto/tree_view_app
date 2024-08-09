@@ -11,6 +11,6 @@ class ThemeProvider {
     colorScheme: colorScheme,
     appBarTheme: appBarTheme,
     iconTheme: iconThemeData,
-    dividerTheme: const DividerThemeData(color: Color(0XFFEAEEF2)),
+    dividerTheme: dividerThemeData,
   );
 }

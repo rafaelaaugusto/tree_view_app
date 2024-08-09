@@ -9,6 +9,7 @@ const criticalIconColor = Colors.red;
 const sensorIconColor = Colors.green;
 const inputColor = Color(0XFFEAEFF3);
 const hintColor = Color(0XFF8E98A3);
+const dividerColor = Color(0XFFEAEEF2);
 
 const colorScheme = ColorScheme.light(
   primary: primary,
